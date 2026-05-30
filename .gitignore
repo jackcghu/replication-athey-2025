@@ -1,0 +1,9 @@
+temp/
+Rhistory
+.Rhistory
+.RData
+*.aux
+*.log
+*.out
+*.toc
+.DS_Store
