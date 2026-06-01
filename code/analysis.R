@@ -124,3 +124,18 @@ N & \\multicolumn{2}{c}{12,208} \\\\
 
 writeLines(latex_table, "output/tables/main_result.tex")
 cat("Saved output/tables/main_result.tex\n")
+
+# =========================================================
+# Save macros file so paper.tex can read numbers directly
+# =========================================================
+macros <- sprintf(
+'\\newcommand{\\autoc}{%.4f}
+\\newcommand{\\autocse}{%.4f}
+\\newcommand{\\meanclate}{%.4f}
+\\newcommand{\\sdclate}{%.4f}
+\\newcommand{\\autoclate}{%.4f}',
+  autoc_est, autoc_se, mean(tau_CL_hat), sd(tau_CL_hat),
+  autoc_est - 0.0412
+)
+writeLines(macros, "output/tables/macros.tex")
+cat("Saved output/tables/macros.tex\n")
