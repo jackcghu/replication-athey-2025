@@ -4,6 +4,7 @@ all: paper/paper.pdf
 
 # Step 1: Preprocessing
 temp/cleaned_data.csv: input/1_Cleaned_wide_Dataset.csv code/preprocess.R
+	mkdir -p temp
 	Rscript code/preprocess.R
 
 # Step 2: Analysis — produces table and figure
