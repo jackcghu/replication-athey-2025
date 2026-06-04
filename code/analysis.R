@@ -75,6 +75,9 @@ rate_compliance <- rank_average_treatment_effect(
 autoc_est <- rate_compliance$estimate
 autoc_se  <- rate_compliance$std.err
 
+ci_lo <- autoc_est - 1.96 * autoc_se
+ci_hi <- autoc_est + 1.96 * autoc_se
+
 # =========================================================
 # Console summary
 # =========================================================
@@ -113,13 +116,14 @@ latex_table <- sprintf(
 \\midrule
 AUTOC & $%.4f$ & $0.0412$ \\\\
 Standard Error & $(%.4f)$ & $(0.0068)$ \\\\
+95\\%% CI & $[%.4f,\\ %.4f]$ & $[0.0279,\\ 0.0545]$ \\\\
 Mean CLATE & $%.4f$ & $\\approx 0.15$ \\\\
 N & \\multicolumn{2}{c}{12,208} \\\\
 \\bottomrule
 \\end{tabular}
 \\label{tab:main}
 \\end{table}',
-  autoc_est, autoc_se, mean(tau_CL_hat)
+  autoc_est, autoc_se, ci_lo, ci_hi, mean(tau_CL_hat)
 )
 
 writeLines(latex_table, "output/tables/main_result.tex")
