@@ -6,9 +6,6 @@
 \usepackage{setspace}
 \onehalfspacing
 
-% Auto-imported numbers from analysis.R
-\input{../output/tables/macros.tex}
-
 \title{Replicating Figure F1 and Equation (1) from\\
 Athey, Inoue, and Tsugawa (2025)}
 \author{Jack Chepin}
@@ -19,20 +16,23 @@ Athey, Inoue, and Tsugawa (2025)}
 
 \section{The Original Paper}
 
-This replication is from the paper \textit{Targeted Treatment Assignment Using Data from
+This replication targets \textit{Targeted Treatment Assignment Using Data from
 Randomized Experiments with Noncompliance} by Susan Athey, Kosuke Inoue, and
-Yusuke Tsugawa, published in \textit{AEA Papers and Proceedings} (2025).\footnote{Athey, Susan, Kosuke Inoue, and Yusuke Tsugawa. 2025. ``Targeted Treatment Assignment Using Data from Randomized Experiments with Noncompliance.'' \textit{AEA Papers and Proceedings} 115: 209--214. Supplemental Appendix available at the same URL.} The
+Yusuke Tsugawa, published in \textit{AEA Papers and Proceedings} (2025). The
 paper studies how to optimally assign treatment in settings where a randomized
-experiment has imperfect compliance. Imperfect compliance is when being assigned to that treatment group does not mean that you will receive the treatment. This creates issues since one cannot simply compare the control and treatment groups directly, due to bias.  The central research question is how heterogeneity in both treatment benefit and compliance rates should jointly inform targeting decisions.
+experiment has imperfect compliance. The central research question is how
+heterogeneity in both treatment benefit and compliance rates should jointly
+inform targeting decisions.
 
-The empirical strategy is with regards to the Oregon Health Insurance Experiment (OHIE),
+The empirical strategy exploits the Oregon Health Insurance Experiment (OHIE),
 in which lottery selection served as a randomized instrument ($Z_i$) for
 Medicaid enrollment ($W_i$). The authors use Generalized Random Forests (GRF)
-to estimate heterogeneous treatment effects, decomposing the conditional Intention to Treat (ITT) into a compliance component and a benefit component via the Conditional Local Average Treatment Effect (CLATE) formula.
+to estimate heterogeneous treatment effects, decomposing the conditional ITT
+into a compliance component and a benefit component via the CLATE formula.
 
 \section{The Result of Interest}
 
-The replication results are from the equation and table that are below:
+This replication targets two specific results:
 
 \begin{enumerate}
     \item \textbf{Equation (1)}: the Conditional Local Average Treatment Effect
@@ -40,21 +40,24 @@ The replication results are from the equation and table that are below:
     \begin{equation}
         \tau_{CL}(x) = \frac{\tau_Y(x)}{\tau_W(x)}
     \end{equation}
-    where $\tau_Y(x)$ is the conditional Intention to Treat (ITT) and $\tau_W(x)$ is the compliance
-    Conditional Average Treatment Effect (CATE). The paper reports a mean Local Average Treatment Effect (LATE) for debt of approximately $0.15$.
+    where $\tau_Y(x)$ is the conditional ITT and $\tau_W(x)$ is the compliance
+    CATE. The paper reports a mean LATE for debt of approximately 0.15.
 
     \item \textbf{Figure F1}: the Targeting Operator Characteristic (TOC) curve
-    for compliance, with a reported Area Under the Targeting Operator Characteristic curve (AUTOC) $= 0.0412$ (SE $= 0.0068$). This is the
+    for compliance, with reported AUTOC $= 0.0412$ (SE $= 0.0068$). This is the
     headline measure of how much can be gained by targeting individuals with
-    a high estimated compliance.
+    high estimated compliance.
 \end{enumerate}
 
-These results are central to the paper's argument. The issue of people being assigned to a treatment group, but not everyone taking it is prevalent in random experiments, including but not limited to a Medicaid lottery. Equation 1 focuses on the treatment effect for those that comply by dividing the ITT or outcome CATE (which is the expected health benefit from offering that treatment to those that have observed characteristics which are determined prior to treatment) by the conditional compliance rate (which is the subpopulation of those with observable characteristic who receive treatment if offered). The equation estimates the health benefits of the treatment given that they have observable characteristics prior and receive treatment if offered, meaning they are a complier. Figure F1 focuses on the difference between targeting high compliance individuals rather than offering Medicaid at random. The $x$-axis measures the percent of people that are targeted ($q$), and the $y$-axis measures the Targeting Operator Characteristic (TOC) which compares the targeted group's compliance rate to the average compliance rate. Both this equation and figure are essential for understanding compliance. The equation is intended to show the health benefit of people who are compliers receiving treatment, and the figure shows who should be offered Medicaid, the individuals with high compliance, or random assignment. For these impacts with respect to the objective of the paper, these reults are the ones worth reproducing.
+These results are central to the paper's argument that targeting by compliance
+can improve outcomes even when direct benefit targeting is noisy.
 
 \section{Data and Methods}
 
-The data come from the Oregon Health Insurance Experiment (OHIE) (Finkelstein et al.\ 2018),\footnote{Finkelstein, Amy, Katherine Baicker, Sarah Taubman, et al.\ 2018. Replication Data for: ``Oregon Health Insurance Experiment.'' Harvard Dataverse. \texttt{https://doi.org/10.7910/DVN/SJG1ED}.} which is a randomized study evaluating the causal effects of Medicaid coverage on the outcome of low-income Oregon adults. There are a total of $12{,}229$ respondents,
-and of them, there were exclusions among the individuals that were missing data on treatment, age, sex, race, or education, as well as transgender individuals, yielding a final sample of $N = 12{,}208$.
+The data come from the OHIE (Finkelstein et al.\ 2018), a randomized study
+of Medicaid coverage among low-income Oregon adults. Out of 12,229 respondents,
+individuals missing data on treatment, age, sex, race, or education, as well as
+transgender individuals, were excluded, yielding a final sample of $N = 12{,}208$.
 
 \texttt{code/preprocess.R} loads the raw data from \texttt{input/}, removes
 duplicate rows and junk columns, and imputes missing baseline covariates using
@@ -62,7 +65,7 @@ the \texttt{missRanger} random forest package (as specified in Supplemental
 Appendix A.5). The imputed dataset is saved to \texttt{temp/}.
 
 \texttt{code/analysis.R} reads the imputed data and estimates two GRF models.
-An instrumental forest (\texttt{instrumental\_forest}) is utilized to estimate Equation (1),
+An instrumental forest (\texttt{instrumental\_forest}) estimates Equation (1),
 the CLATE $\tau_{CL}(x)$. A causal forest (\texttt{causal\_forest}) with
 outcome $W_i$ and treatment $Z_i$ estimates the compliance CATE $\tau_W(x)$,
 which is then used to rank individuals for the TOC curve. The AUTOC is computed
@@ -91,60 +94,37 @@ values. Figure~\ref{fig:f1} shows the replicated TOC curve for compliance.
     \label{fig:f1}
 \end{figure}
 
-The replicated AUTOC of $\autoc$ is extremely close to the paper's $0.0412$,
-with a difference of just $\autoclate$ --- is well within sampling variation. The 
-AUTOC tells us the average gain in compliance rate due to targeting rather
-than random assignments. In either case, it is about a $4.1$ percentage points
-more if the compliance CATE is utilized to target people, rather than
-random experiments. The mean CLATE of $\meanclate$ is consistent with the paper's 
-reported overall LATE of approximately $0.15$ for debt reduction among compliers.
-In other words, it reveals that Medicaid reduced the probability of obtaining
-medical debt for compliers by about $12\%$ to $15\%$. Both results confirm that there is
+The replicated AUTOC of $0.0408$ is extremely close to the paper's $0.0412$,
+a difference of just $0.0004$ — well within sampling variation. The mean CLATE
+of $0.1258$ is consistent with the paper's reported overall LATE of
+approximately $0.15$ for debt reduction. Both results confirm that there is
 substantial, predictable heterogeneity in compliance rates across individuals.
-The number of operations ($N$) is also consistent with the paper's at $12{,}208$, so,
-there were no observations wrongfully omitted.
 
-The replicated standard error ($\autocse$) is slightly larger than the paper's
-($0.0068$), likely reflecting minute differences in the \texttt{grf} package
-version or number of bootstrap samples used. The error term is small, so the
-increase in gain from targeting is more than simply noise.
+The replicated standard error ($0.0089$) is slightly larger than the paper's
+($0.0068$), likely reflecting minor differences in the \texttt{grf} package
+version or number of bootstrap samples used.
 
 \section{What I Learned}
 
-The easiest part of the replication was finding the data to replicate.
-The paper was available at the American Economic Association, and the 
-data was located by link at that site, and its true location is openICPSR.
-The access to the data, paper, and any relevant materials such as the
-Supplemental Appendix made the process of replication much more efficient.
-
-The hardest part of the replication was in fact the data preparation, specifically
+The hardest part of the replication was data preparation, particularly
 understanding how missing data should be handled. An initial approach using
-\texttt{na.omit()} reduced the sample from $12{,}208$ to $6{,}816$ by dropping all
-rows with any missing values. The paper, however, specifies \texttt{missRanger} 
-imputation in Supplemental Appendix A.5 --- a detail that was essential in
-order to accurately obtain the results. This shows how critical 
-it is for authors to document preprocessing decisions as carefully 
-as estimation decisions.
+\texttt{na.omit()} reduced the sample from 12,208 to 6,816 by dropping all
+rows with any missing values. The paper specifies \texttt{missRanger} imputation
+in Supplemental Appendix A.5 — a detail that was easy to overlook but had a
+large effect on results. This illustrates how critical it is for authors to
+document preprocessing decisions as carefully as estimation decisions.
 
-A second challenge was the covariate selection. The paper describes 
-covariates in prose rather than providing the exact variable name, this 
-required careful cross-referencing between the dataset and the paper's 
-description. For example, the household size variable (\texttt{numhh\_list}) 
-is a standard OHIE control but it is not explicitly listed in the paper's 
-covariate description.
+A second challenge was covariate selection. The paper describes covariates in
+prose rather than providing exact variable names, requiring careful
+cross-referencing between the dataset and the paper's description. The household
+size variable (\texttt{numhh\_list}) is a standard OHIE control but is not
+explicitly listed in the paper's covariate description.
 
 Overall, the replication taught me that GRF-based analyses are highly sensitive
-to sample construction. If you use the wrong command, like mentioned above,
-you run the risk of losing even a great portion of your sample. So you must 
-feed the forest method correct data. Also that the trees used for the
-treatment effects are blind to the individual's outcome, and that the predictions
-are made on data that the tree isn't trained on. The latter two are necessary
-to ensure that overfitting is not an issue, and the AUTOC standard error is
-not significant. If I were the original author, I would have provided an
+to sample construction and that honest, out-of-bag estimation is essential for
+valid AUTOC inference. If I were the original author, I would have provided an
 exact variable list and the preprocessing script directly in the replication
-package rather than describing the covariates in prose. This would reduce
-speculation, and potentially significant errors which in turn would ease the
-replication process.\footnote{Claude (Anthropic) was used for assistance with R coding, LaTeX formatting, and Git/GitHub setup in this replication project.}
+package.
 
 \begin{thebibliography}{9}
 
