@@ -7,7 +7,7 @@ Athey, Susan, Kosuke Inoue, and Yusuke Tsugawa. 2025. "Targeted Treatment Assign
 ## Result Replicated
 
 Figure F1: Targeting Operator Characteristic (TOC) curve for compliance.
-- Paper reports: AUTOC = 0.0412 (SE = 0.0068)
+- Paper reports: AUTOC = 0.046 (SE = 0.007)
 - This replication: AUTOC = 0.0414 (SE = 0.0087)
 
 Equation (1): CLATE = tau_Y(x) / tau_W(x) estimated via instrumental forest.
