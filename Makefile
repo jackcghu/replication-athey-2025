@@ -8,7 +8,7 @@ temp/cleaned_data.csv: input/1_Cleaned_wide_Dataset.csv code/preprocess.R
 	Rscript code/preprocess.R
 
 # Step 2: Analysis — produces table and figure
-output/tables/main_result.tex output/figures/figure_f1.png: temp/cleaned_data.csv code/analysis.R
+output/tables/main_result.tex output/tables/macros.tex output/figures/figure_f1.png: temp/cleaned_data.csv code/analysis.R
 	Rscript code/analysis.R
 
 # Step 3: Compile paper
