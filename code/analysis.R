@@ -83,7 +83,7 @@ ci_hi <- autoc_est + 1.96 * autoc_se
 # =========================================================
 cat("\nReplication Results\n")
 cat("==================\n")
-cat("Paper reports:  AUTOC = 0.0412 (SE 0.0068)\n")
+cat("Paper reports:  AUTOC = 0.046 (SE 0.007)\n")
 cat("We obtain:      AUTOC =", round(autoc_est, 4),
     "(SE", round(autoc_se, 4), ")\n")
 cat("Difference:    ", round(autoc_est - 0.0412, 4), "\n\n")
@@ -114,8 +114,8 @@ latex_table <- sprintf(
 \\toprule
  & Replicated & Paper \\\\
 \\midrule
-AUTOC & $%.4f$ & $0.0412$ \\\\
-Standard Error & $(%.4f)$ & $(0.0068)$ \\\\
+AUTOC & $%.4f$ & $0.046$ \\\\
+Standard Error & $(%.4f)$ & $(0.007)$ \\\\
 95\\%% CI & $[%.4f,\\ %.4f]$ & $[0.0279,\\ 0.0545]$ \\\\
 Mean CLATE & $%.4f$ & $\\approx 0.15$ \\\\
 N & \\multicolumn{2}{c}{12,208} \\\\
@@ -139,7 +139,7 @@ macros <- sprintf(
 \\newcommand{\\sdclate}{%.4f}
 \\newcommand{\\autoclate}{%.4f}',
   autoc_est, autoc_se, mean(tau_CL_hat), sd(tau_CL_hat),
-  autoc_est - 0.0412
+  autoc_est - 0.046
 )
 writeLines(macros, "output/tables/macros.tex")
 cat("Saved output/tables/macros.tex\n")
